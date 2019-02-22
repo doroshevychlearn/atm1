@@ -12,6 +12,7 @@ export class PaymentService {
 
   public static readonly TRANSACTION_REPLENISH_URL = environment.apiUrl + "/api/transaction/replenish";
   public static readonly TRANSACTION_WITHDRAW_URL = environment.apiUrl + "/api/transaction/withdraw";
+  public static readonly TRANSACTION_REMIT_URL = environment.apiUrl + "/api/transaction/remit";
   public static readonly MONTHLY_STATEMENT_URL = environment.apiUrl + "/api/transaction/statement/monthly";
   public static readonly YEARLY_STATEMENT_URL = environment.apiUrl + "/api/transaction/statement/yearly";
 
@@ -32,6 +33,17 @@ export class PaymentService {
       amount: withdraw
     };
     return this.httpClient.post(PaymentService.TRANSACTION_WITHDRAW_URL, requestParam).pipe(
+      map(res => {
+        return res;
+      }));
+  }
+
+  public remitMoney(number: number, amount: number) : Observable<any>{
+    const requestParam = {
+      number: number,
+      amount: amount
+    };
+    return this.httpClient.post(PaymentService.TRANSACTION_REMIT_URL, requestParam).pipe(
       map(res => {
         return res;
       }));

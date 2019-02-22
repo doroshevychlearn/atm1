@@ -21,6 +21,7 @@ public class Transaction {
     private Date date;
 
     @OneToOne
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "sender")
     private User sender;
 

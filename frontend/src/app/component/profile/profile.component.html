@@ -11,12 +11,12 @@
         <h3 class="title">Remit Money</h3>
         <div class="example-container">
           <mat-form-field>
-            <input matInput min="1" placeholder="Enter the recipient's number" type="number">
+            <input matInput min="1" [(ngModel)]="remitNumber" placeholder="Enter the recipient's number" type="number">
           </mat-form-field>
           <mat-form-field>
-            <input matInput min="1" placeholder="Enter amount" type="number">
+            <input matInput min="1" [(ngModel)]="remitAmount" placeholder="Enter amount" type="number">
           </mat-form-field>
-          <button mat-button class="btn">Send!</button>
+          <button mat-button class="btn" (click)="remitModel()">Send!</button>
         </div>
       </mat-card>
     </mat-tab>
@@ -46,8 +46,8 @@
       <mat-card class="tab-content">
         <h3 class="title">Monthly statement</h3>
         <div class="example-container">
-          <mat-toolbar><span class="tool-bar-pricing-title">Spent:</span> <span class="tool-bar-pricing-value__red">{{monthlyStatement.spent}}</span>$</mat-toolbar>
-          <mat-toolbar><span class="tool-bar-pricing-title">Obtained:</span> <span class="tool-bar-pricing-value__green">{{monthlyStatement.obtained}}</span>$</mat-toolbar>
+          <mat-toolbar><span class="tool-bar-pricing-title">Spent:</span> <span class="tool-bar-pricing-value__red">{{monthlyStatementSpent}}</span>$</mat-toolbar>
+          <mat-toolbar><span class="tool-bar-pricing-title">Obtained:</span> <span class="tool-bar-pricing-value__green">{{monthlyStatementObtained}}</span>$</mat-toolbar>
         </div>
       </mat-card>
     </mat-tab>
@@ -55,8 +55,8 @@
       <mat-card class="tab-content">
         <h3 class="title">Yearly statement</h3>
         <div class="example-container">
-          <mat-toolbar><span class="tool-bar-pricing-title">Spent:</span> <span class="tool-bar-pricing-value__red">{{yearlyStatement.spent}}</span>$</mat-toolbar>
-          <mat-toolbar><span class="tool-bar-pricing-title">Obtained:</span> <span class="tool-bar-pricing-value__green">{{yearlyStatement.obtained}}</span>$</mat-toolbar>
+          <mat-toolbar><span class="tool-bar-pricing-title">Spent:</span> <span class="tool-bar-pricing-value__red">{{yearlyStatementSpent}}</span>$</mat-toolbar>
+          <mat-toolbar><span class="tool-bar-pricing-title">Obtained:</span> <span class="tool-bar-pricing-value__green">{{yearlyStatementObtained}}</span>$</mat-toolbar>
         </div>
       </mat-card>
     </mat-tab>

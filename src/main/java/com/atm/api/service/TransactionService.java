@@ -2,8 +2,9 @@ package com.atm.api.service;
 
 import com.atm.api.entity.Transaction;
 import com.atm.api.entity.User;
-import com.atm.api.models.response.AmountResponse;
+import com.atm.api.models.response.StatementResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TransactionService {
@@ -24,5 +25,5 @@ public interface TransactionService {
 
     Transaction createWithdraw(User user, Double amount);
 
-    AmountResponse getMonthlyStatement(User user);
+    StatementResponse getMonthlyStatement(User user, LocalDate firstDate, LocalDate secondDate);
 }

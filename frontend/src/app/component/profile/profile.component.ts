@@ -4,7 +4,6 @@ import {UserData} from "../../model/user-data";
 import {PaymentService} from "../../service/payment/payment.service";
 import {ToastrService} from "ngx-toastr";
 import {MatTabChangeEvent} from "@angular/material";
-import {Statement} from "../../model/statement";
 
 @Component({
   selector: 'app-profile',
@@ -17,8 +16,12 @@ export class ProfileComponent implements OnInit {
   userData: UserData;
   replenish: number;
   withdraw: number;
-  monthlyStatement: Statement;
-  yearlyStatement: Statement;
+  monthlyStatementSpent: number;
+  monthlyStatementObtained: number;
+  yearlyStatementSpent: number;
+  yearlyStatementObtained: number;
+  remitNumber: number;
+  remitAmount: number;
 
   constructor(public authService: AuthService,
               public paymentService: PaymentService,
@@ -62,20 +65,34 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  remitModel(){
+    if(this.remitNumber && this.remitAmount > 0){
+      this.paymentService.remitMoney(this.remitNumber, this.remitAmount).subscribe(value => {
+        if(value){
+          this.toastr.success("Success remit!");
+          setTimeout(()=>{ location.reload() }, 2000);
+        }
+      }, error => {
+        this.toastr.error(error.error.message);
+      });
+    }
+  }
+
   onLinkClick(event: MatTabChangeEvent) {
     if(event.index === 3){
       this.paymentService.getMonthlyStatement().subscribe(value => {
-        this.monthlyStatement = value;
+        this.monthlyStatementSpent = value.spent;
+        this.monthlyStatementObtained = value.obtained;
       }, error => {
         this.toastr.error(error.error.message);
       })
     }else if(event.index === 4){
       this.paymentService.getYearlyStatement().subscribe(value => {
-        this.yearlyStatement = value;
+        this.yearlyStatementSpent = value.spent;
+        this.yearlyStatementObtained = value.obtained;
       }, error => {
         this.toastr.error(error.error.message);
       })
-
     }
   }
 
