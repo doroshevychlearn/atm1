@@ -1,0 +1,68 @@
+<mat-toolbar class="main-tool-bar">
+  <span class="title-tool-bar">Email: <span class="value-tool-bar">{{userData.email}}</span></span>
+  <span class="title-tool-bar">Number: <span class="value-tool-bar">{{userData.number}}</span></span>
+  <span class="title-tool-bar">Balance: <span class="value-tool-bar">{{userData.balance}} $</span></span>
+  <button mat-button (click)="authService.logout()" class="btn">Logout</button>
+</mat-toolbar>
+<div class="center-div">
+  <mat-tab-group (selectedTabChange)="onLinkClick($event)">
+    <mat-tab  label="Remit money">
+      <mat-card class="tab-content">
+        <h3 class="title">Remit Money</h3>
+        <div class="example-container">
+          <mat-form-field>
+            <input matInput min="1" placeholder="Enter the recipient's number" type="number">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput min="1" placeholder="Enter amount" type="number">
+          </mat-form-field>
+          <button mat-button class="btn">Send!</button>
+        </div>
+      </mat-card>
+    </mat-tab>
+    <mat-tab  label="Withdraw money">
+      <mat-card class="tab-content">
+        <h3 class="title">Withdraw Money</h3>
+        <div class="example-container">
+          <mat-form-field>
+            <input matInput min="1" [(ngModel)]="withdraw" placeholder="Enter amount" type="number">
+          </mat-form-field>
+          <button mat-button class="btn" (click)="withdrawMoney()">Withdraw!</button>
+        </div>
+      </mat-card>
+    </mat-tab>
+    <mat-tab  label="Replenish money">
+      <mat-card class="tab-content">
+        <h3 class="title">Replenish Money</h3>
+        <div class="example-container">
+          <mat-form-field>
+            <input matInput min="1" [(ngModel)]="replenish" placeholder="Enter amount" type="number">
+          </mat-form-field>
+          <button mat-button class="btn" (click)="replenishMoney()">Replenish!</button>
+        </div>
+      </mat-card>
+    </mat-tab>
+    <mat-tab  label="Monthly statement">
+      <mat-card class="tab-content">
+        <h3 class="title">Monthly statement</h3>
+        <div class="example-container">
+          <mat-toolbar><span class="tool-bar-pricing-title">Spent:</span> <span class="tool-bar-pricing-value__red">{{monthlyStatement.spent}}</span>$</mat-toolbar>
+          <mat-toolbar><span class="tool-bar-pricing-title">Obtained:</span> <span class="tool-bar-pricing-value__green">{{monthlyStatement.obtained}}</span>$</mat-toolbar>
+        </div>
+      </mat-card>
+    </mat-tab>
+    <mat-tab  label="Yearly statement">
+      <mat-card class="tab-content">
+        <h3 class="title">Yearly statement</h3>
+        <div class="example-container">
+          <mat-toolbar><span class="tool-bar-pricing-title">Spent:</span> <span class="tool-bar-pricing-value__red">{{yearlyStatement.spent}}</span>$</mat-toolbar>
+          <mat-toolbar><span class="tool-bar-pricing-title">Obtained:</span> <span class="tool-bar-pricing-value__green">{{yearlyStatement.obtained}}</span>$</mat-toolbar>
+        </div>
+      </mat-card>
+    </mat-tab>
+    <mat-tab  label="All transactions">
+      Content 3
+    </mat-tab>
+  </mat-tab-group>
+</div>
+

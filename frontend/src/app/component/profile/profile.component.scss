@@ -1,0 +1,66 @@
+.main-tool-bar{
+  background: transparent;
+  color: rgba(0,0,0,0.4);
+  font-size: 14px;
+}
+
+.title-tool-bar{
+  font-weight: bold;
+  margin-right: 2rem;
+}
+.value-tool-bar{
+  font-weight: 100;
+}
+
+.center-div{
+  width: 40%;
+  margin: auto;
+  margin-top: 5rem;
+  background-color: transparent;
+}
+.tab-content{
+  padding: 1.2rem;
+  margin-top: 3rem;
+}
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-container > * {
+  width: 50%;
+  margin: auto;
+}
+.title{
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.btn{
+  float: right;
+  background-color: #4c75a3;
+  color: #ffffff;
+}
+.mat-sort-header-container {
+  align-items: center;
+}
+
+.tool-bar-pricing-title{
+  width: 50%;
+  max-width: 50%;
+  float: left;
+  font-weight: bolder;
+}
+
+.tool-bar-pricing-value{
+  width: 50%;
+  max-width: 50%;
+  float: right;
+  &__red{
+    color: red;
+  }
+  &__green{
+    color: forestgreen;
+  }
+}
