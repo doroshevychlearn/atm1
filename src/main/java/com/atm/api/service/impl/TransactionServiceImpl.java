@@ -2,6 +2,7 @@ package com.atm.api.service.impl;
 
 import com.atm.api.entity.Transaction;
 import com.atm.api.entity.TransactionStatus;
+import com.atm.api.entity.TransactionType;
 import com.atm.api.entity.User;
 import com.atm.api.models.response.AmountResponse;
 import com.atm.api.models.response.StatementResponse;
@@ -53,6 +54,7 @@ public class TransactionServiceImpl extends AbstactService implements Transactio
         transaction.setDate(new Date());
         transaction.setReceiver(receiver);
         transaction.setSender(sender);
+        transaction.setType(TransactionType.TRANSFER);
         if (sender.getBalance() > amount) {
             BigDecimal balance = new BigDecimal(sender.getBalance()).subtract(new BigDecimal(amount));
             receiver.setBalance(new BigDecimal(receiver.getBalance()).add(new BigDecimal(amount)).doubleValue());
@@ -92,6 +94,7 @@ public class TransactionServiceImpl extends AbstactService implements Transactio
         transaction.setAmount(amount);
         transaction.setDate(new Date());
         transaction.setReceiver(user);
+        transaction.setType(TransactionType.REFILL);
         if (Objects.isNull(amount) || amount < 1) {
             transaction.setStatus(TransactionStatus.FAILED);
             throw new IllegalArgumentException("Bad amount!");
@@ -111,9 +114,10 @@ public class TransactionServiceImpl extends AbstactService implements Transactio
     @Override
     public Transaction createWithdraw(User user, Double amount) {
         Transaction transaction = new Transaction();
-        transaction.setAmount(-amount);
+        transaction.setAmount(amount);
         transaction.setDate(new Date());
         transaction.setReceiver(user);
+        transaction.setType(TransactionType.WITHDRAWAL);
         if (user.getBalance() > amount) {
             BigDecimal balance = new BigDecimal(user.getBalance()).subtract(new BigDecimal(amount));
             user.setBalance(balance.doubleValue());
@@ -136,34 +140,46 @@ public class TransactionServiceImpl extends AbstactService implements Transactio
             throw new IllegalArgumentException("User must be not null!");
         }
 
-        Collection<Transaction> operations = this.transactionRepository.findOperations(Date.from(firstDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),
-                Date.from(secondDate.atStartOfDay(ZoneId.systemDefault()).toInstant()), user);
-        List<Transaction> byUserIsSender = operations
-                .stream()
-                .filter(item -> Objects.nonNull(item.getSender())
-                        && item.getSender().equals(user)
-                        && item.getStatus().equals(TransactionStatus.SUCCEED))
-                .collect(Collectors.toList());
-        byUserIsSender.forEach(transaction -> {
-            transaction.setAmount(-transaction.getAmount());
-        });
-        byUserIsSender.addAll(operations.
-                stream().
-                filter(item -> Objects.isNull(item.getSender())
-                        && item.getReceiver().equals(user)
-                        && item.getAmount() < 1
-                        && item.getStatus().equals(TransactionStatus.SUCCEED))
-                .collect(Collectors.toList()));
-        double spent = byUserIsSender.stream().mapToDouble(item -> item.getAmount()).sum();
-        List<Transaction> positiveNumbers = operations
-                .stream()
-                .filter(item -> Objects.isNull(item.getSender())
-                        && Objects.nonNull(item.getReceiver())
-                        && item.getReceiver().equals(user)
-                        && item.getAmount() > 0
-                        && item.getStatus().equals(TransactionStatus.SUCCEED))
-                .collect(Collectors.toList());
-        double obtained = positiveNumbers.stream().mapToDouble(item -> item.getAmount()).sum();
+        Date firstD = Date.from(firstDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date secondD = Date.from(secondDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Collection<Transaction> operations = this.transactionRepository.findOperationsReceiver(firstD, secondD, user);
+        operations.addAll(this.transactionRepository.findOperationsSender(firstD, secondD, user));
+        double spent = this.getSpentStatement(user, operations);
+        double obtained = this.getObtainedStatement(user, operations);
         return new StatementResponse(spent, obtained);
+    }
+
+    private double getSpentStatement(User user, Collection<Transaction> operations){
+        double result = 0;
+        if(!Objects.isNull(operations) && !operations.isEmpty()){
+            result = operations
+                    .stream()
+                    .filter(t ->
+                            (t.getStatus().equals(TransactionStatus.SUCCEED) && t.getType().equals(TransactionType.TRANSFER) && t.getSender().equals(user)) || (t.getStatus().equals(TransactionStatus.SUCCEED) && t.getType().equals(TransactionType.WITHDRAWAL) && t.getReceiver().equals(user))
+                    )
+                    .collect(Collectors.toSet())
+                    .stream()
+                    .mapToDouble(transaction -> transaction.getAmount()).sum();
+
+        }
+        return result;
+    }
+
+    private double getObtainedStatement(User user, Collection<Transaction> operations){
+        double result = 0;
+        if(!Objects.isNull(operations) && !operations.isEmpty()){
+            result = operations
+                    .stream()
+                    .filter(t ->
+                            (t.getStatus().equals(TransactionStatus.SUCCEED) && t.getType().equals(TransactionType.TRANSFER) && t.getReceiver().equals(user))
+                                    || (t.getStatus().equals(TransactionStatus.SUCCEED) && t.getType().equals(TransactionType.REFILL) && t.getReceiver().equals(user))
+                    )
+                    .collect(Collectors.toSet())
+                    .stream()
+                    .mapToDouble(transaction -> transaction.getAmount()).sum();
+
+        }
+        return result;
     }
 }

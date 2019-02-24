@@ -21,8 +21,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     //    @Query("select c from Country c where lower(c.name) = lower(:countryName)")
 //    List<Transaction> findAllBySenderOrReceiverAndDateBetween(User user, Date date, Date date1);
 //    List<Transaction> findAllBySenderOrReceiverAndDateBetween(User user, );
-    @Query("SELECT t FROM Transaction t WHERE t.date BETWEEN :from AND :to AND t.sender = :user OR t.receiver = :user")
-    Collection<Transaction> findOperations(@Param("from") Date startDay,
+    @Query("SELECT t FROM Transaction t WHERE t.date BETWEEN :fromm AND :to AND t.receiver = :user OR t.sender = :user")
+    Collection<Transaction> findOperationsReceiver(@Param("fromm") Date startDay,
+                                           @Param("to") Date endDay,
+                                           @Param("user") User user);
+
+    @Query("SELECT t FROM Transaction t WHERE t.date BETWEEN :fromm AND :to AND t.sender = :user OR t.receiver = :user")
+    Collection<Transaction> findOperationsSender(@Param("fromm") Date startDay,
                                            @Param("to") Date endDay,
                                            @Param("user") User user);
 }

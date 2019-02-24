@@ -56,16 +56,16 @@ public class TransactionController extends  AbstractController {
     @GetMapping("/statement/monthly")
     public ResponseEntity getMonthlyStatement(@RequestHeader("Customer") String id){
         User user = getAuthUser(id);
-        LocalDate firstDate = LocalDate.now();
-        LocalDate secondDate = LocalDate.now().minusMonths(1);
+        LocalDate firstDate = LocalDate.now().minusMonths(1);
+        LocalDate secondDate = LocalDate.now();
         return ResponseEntity.ok(this.transactionService.getMonthlyStatement(user, firstDate, secondDate));
     }
 
     @GetMapping("/statement/yearly")
     public ResponseEntity getYearlyStatement(@RequestHeader("Customer") String id){
         User user = getAuthUser(id);
-        LocalDate firstDate = LocalDate.now();
-        LocalDate secondDate = LocalDate.now().minusYears(1);
+        LocalDate firstDate = LocalDate.now().minusYears(1);
+        LocalDate secondDate = LocalDate.now();
         return ResponseEntity.ok(this.transactionService.getMonthlyStatement(user, firstDate, secondDate));
     }
 
